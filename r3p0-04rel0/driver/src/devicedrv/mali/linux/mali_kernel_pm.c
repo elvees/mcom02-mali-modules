@@ -1,9 +1,9 @@
 /**
  * Copyright (C) 2010-2012 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -81,6 +81,13 @@ struct pm_ext_ops mali_ext_pm_operations =
 };
 #endif
 
+static const struct of_device_id mali_dt_ids[] = {
+	{ .compatible = "arm,mali-dev" },
+	{ /* sentinel */ }
+};
+
+MODULE_DEVICE_TABLE(of, mali_dt_ids);
+
 
 static struct platform_driver mali_plat_driver =
 {
@@ -102,6 +109,7 @@ static struct platform_driver mali_plat_driver =
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29))
 		.pm = &mali_dev_pm_ops,
 #endif
+		.of_match_table = mali_dt_ids,
 	},
 };
 
@@ -130,6 +138,15 @@ struct platform_device mali_gpu_device =
 /** This function is called when the device is probed */
 static int mali_probe(struct platform_device *pdev)
 {
+	struct resource *regs;
+
+	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+
+	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 0)));
+	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 1)));
+	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 2)));
+	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 3)));
+
 	return 0;
 }
 
@@ -234,7 +251,7 @@ int _mali_dev_platform_register(void)
 
 #if MALI_LICENSE_IS_GPL
 	err = platform_device_register(&mali_gpu_device);
-	if (!err) 
+	if (!err)
 	{
 		err = platform_driver_register(&mali_plat_driver);
 		if (err)

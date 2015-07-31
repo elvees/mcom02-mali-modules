@@ -400,7 +400,9 @@ _mali_osk_errcode_t _mali_osk_mem_mapregion_init( mali_memory_allocation * descr
 	  The memory is reserved, meaning that it's present and can never be paged out (see also previous entry)
 	*/
 	vma->vm_flags |= VM_IO;
-	vma->vm_flags |= VM_RESERVED;
+	/* VM_RESERVED was removed from linux kernel in version 3.10.
+	   Using (VM_DONTEXPAND | VM_DONTDUMP) alias instead. */
+	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
 	vma->vm_flags |= VM_DONTCOPY;
 
 	vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
