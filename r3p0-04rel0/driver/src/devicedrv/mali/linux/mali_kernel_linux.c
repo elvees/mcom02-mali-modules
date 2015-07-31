@@ -110,7 +110,7 @@ int mali_driver_init(void)
 	MALI_DEBUG_PRINT(2, ("\n"));
 	MALI_DEBUG_PRINT(2, ("Inserting Mali v%d device driver. \n",_MALI_API_VERSION));
 	MALI_DEBUG_PRINT(2, ("Compiled: %s, time: %s.\n", __DATE__, __TIME__));
-	MALI_DEBUG_PRINT(2, ("Driver revision: %s\n", SVN_REV_STRING));
+	MALI_DEBUG_PRINT(2, ("Driver revision: %s\n", GIT_REV_STRING));
 
 	ret = _mali_dev_platform_register();
 	if (0 != ret) goto platform_register_failed;
@@ -512,4 +512,4 @@ module_exit(mali_driver_exit);
 
 MODULE_LICENSE(MALI_KERNEL_LINUX_LICENSE);
 MODULE_AUTHOR("ARM Ltd.");
-MODULE_VERSION(SVN_REV_STRING);
+MODULE_VERSION(GIT_REV_STRING);

@@ -25,11 +25,18 @@ endif
 
 UDD_FILE_PREFIX = ../mali/
 
-# Get subversion revision number, fall back to 0000 if no svn info is available
-SVN_REV := $(shell ((svnversion | grep -qv exported && echo -n 'Revision: ' && svnversion) || git svn info | sed -e 's/$$$$/M/' | grep '^Revision: ' || echo ${MALI_RELEASE_NAME}) 2>/dev/null | sed -e 's/^Revision: //')
+DRIVER_DIR=$(src)
+MALI_RELEASE_NAME=$(shell cat $(DRIVER_DIR)/.version 2> /dev/null)
 
-ccflags-y += -DSVN_REV=$(SVN_REV)
-ccflags-y += -DSVN_REV_STRING=\"$(SVN_REV)\"
+GIT_REV := $(shell git -C "$(DRIVER_DIR)" describe --tags --always 2>/dev/null)
+ifeq ($(GIT_REV),)
+GIT_REV := $(MALI_RELEASE_NAME)
+else
+GIT_REV := $(MALI_RELEASE_NAME)-$(GIT_REV)
+endif
+
+ccflags-y += -DGIT_REV=$(GIT_REV)
+ccflags-y += -DGIT_REV_STRING=\"$(GIT_REV)\"
 
 ccflags-y += -I$(src) -I$(src)/common -I$(src)/linux -I$(src)/../mali/common -I$(src)/../mali/linux -I$(src)/../../ump/include/ump
 ccflags-y += -DMALI_STATE_TRACKING=0
