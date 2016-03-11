@@ -22,6 +22,7 @@
 #ifdef CONFIG_PM_RUNTIME
 #include <linux/pm_runtime.h>
 #endif
+#include <linux/clk.h>
 #include "mali_osk.h"
 #include "mali_uk_types.h"
 #include "mali_kernel_common.h"
@@ -33,6 +34,8 @@
 #if ! MALI_LICENSE_IS_GPL
 #undef CONFIG_PM_RUNTIME
 #endif
+
+static struct clk *mali_clk;
 
 static int mali_probe(struct platform_device *pdev);
 static int mali_remove(struct platform_device *pdev);
@@ -139,8 +142,25 @@ struct platform_device mali_gpu_device =
 static int mali_probe(struct platform_device *pdev)
 {
 	struct resource *regs;
+	int err;
 
 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+
+	/* Try to get and enable clock */
+	mali_clk = devm_clk_get(&pdev->dev, NULL);
+	if (IS_ERR(mali_clk)) {
+		err = PTR_ERR(mali_clk);
+		dev_err(&pdev->dev,
+			"failed to get clk (%u)\n", err);
+		return err;
+	}
+
+	err = clk_prepare_enable(mali_clk);
+	if (err) {
+		dev_err(&pdev->dev,
+			"failed to enable clk (%u)\n", err);
+		return err;
+	}
 
 	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 0)));
 	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 1)));
@@ -155,6 +175,7 @@ static int mali_remove(struct platform_device *pdev)
 #ifdef CONFIG_PM_RUNTIME
 	pm_runtime_disable(&pdev->dev);
 #endif
+	clk_disable_unprepare(mali_clk);
 	return 0;
 }
 
