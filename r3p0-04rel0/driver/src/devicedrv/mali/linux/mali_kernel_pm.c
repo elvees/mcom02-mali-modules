@@ -271,18 +271,11 @@ int _mali_dev_platform_register(void)
 #endif
 
 #if MALI_LICENSE_IS_GPL
-	err = platform_device_register(&mali_gpu_device);
-	if (!err)
-	{
-		err = platform_driver_register(&mali_plat_driver);
-		if (err)
-		{
+	err = platform_driver_register(&mali_plat_driver);
 #ifdef CONFIG_PM_RUNTIME
-			unregister_pm_notifier(&mali_pwr_notif_block);
+	if (err)
+		unregister_pm_notifier(&mali_pwr_notif_block);
 #endif
-			platform_device_unregister(&mali_gpu_device);
-		}
-	}
 #endif
 
 	return err;
@@ -298,6 +291,5 @@ void _mali_dev_platform_unregister(void)
 
 #if MALI_LICENSE_IS_GPL
 	platform_driver_unregister(&mali_plat_driver);
-	platform_device_unregister(&mali_gpu_device);
 #endif
 }
