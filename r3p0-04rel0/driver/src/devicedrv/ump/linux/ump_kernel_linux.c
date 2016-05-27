@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2012 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -439,6 +439,25 @@ static int ump_file_mmap(struct file * filp, struct vm_area_struct * vma)
 
 	return 0; /* success */
 }
+
+/* TODO: Check that user has ability to free allocated handler in pbuf */
+int ump_export_secure_id(unsigned long addr, unsigned long size, void **pbuf, u32 __user *arg)
+{
+	ump_secure_id sid;
+
+	if (addr == 0 || size == 0 || !pbuf || !arg)
+		return -EINVAL;
+
+	if (*pbuf == NULL) {
+		ump_dd_physical_block umd = { addr, size };
+		*pbuf = ump_dd_handle_create_from_phys_blocks(&umd, 1);
+	}
+
+	sid = ump_dd_secure_id_get(*pbuf);
+
+	return put_user((unsigned int)sid, arg);
+}
+EXPORT_SYMBOL(ump_export_secure_id);
 
 /* Export UMP kernel space API functions */
 EXPORT_SYMBOL(ump_dd_secure_id_get);
