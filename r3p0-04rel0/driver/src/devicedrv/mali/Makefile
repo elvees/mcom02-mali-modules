@@ -15,9 +15,6 @@ USE_UMPV2=0
 # system to actually build the driver. After that point the Kbuild file takes
 # over.
 
-# set up defaults if not defined by the user
-ARCH ?= arm
-
 OSKOS=linux
 FILES_PREFIX=
 
@@ -48,11 +45,6 @@ endif
 # Define host system directory
 KDIR-$(shell uname -m):=/lib/modules/$(shell uname -r)/build
 
-ifeq ($(ARCH), arm)
-	# when compiling for ARM we're cross compiling
-	export CROSS_COMPILE ?= arm-none-linux-gnueabi-
-endif
-
 # look up KDIR based om CPU selection
 KDIR ?= $(KDIR-$(CPU))
 
@@ -77,13 +69,13 @@ export CONFIG_MALI400_GPU_UTILIZATION := y
 endif
 
 all: $(UMP_SYMVERS_FILE)
-	$(MAKE) ARCH=$(ARCH) -C $(KDIR) M=$(CURDIR) modules
+	$(MAKE) -C $(KDIR) M=$(CURDIR) modules
 	@rm $(FILES_PREFIX)__malidrv_build_info.c $(FILES_PREFIX)__malidrv_build_info.o
 
 clean:
-	$(MAKE) ARCH=$(ARCH) -C $(KDIR) M=$(CURDIR) clean
+	$(MAKE) -C $(KDIR) M=$(CURDIR) clean
 
 kernelrelease:
-	$(MAKE) ARCH=$(ARCH) -C $(KDIR) kernelrelease
+	$(MAKE) -C $(KDIR) kernelrelease
 
 export CONFIG KBUILD_EXTRA_SYMBOLS

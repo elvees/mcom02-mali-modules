@@ -10,7 +10,6 @@
 
 # For each arch check: CROSS_COMPILE , KDIR , CFLAGS += -DARCH
 
-export ARCH ?= arm
 BUILD ?= debug
 
 # Check that required parameters are supplied.
@@ -26,11 +25,6 @@ endif
 
 # Define host system directory
 KDIR-$(shell uname -m):=/lib/modules/$(shell uname -r)/build
-
-ifeq ($(ARCH), arm)
-	# when compiling for ARM we're cross compiling
-	export CROSS_COMPILE ?= arm-none-linux-gnueabi-
-endif
 
 # look up KDIR based om CPU selection
 KDIR ?= $(KDIR-$(CPU))
