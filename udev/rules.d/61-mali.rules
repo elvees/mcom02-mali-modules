@@ -1,0 +1,1 @@
+ACTION=="add", SUBSYSTEM=="mali|ump", ENV{MAJOR}!="", GROUP="video", TAG+="uaccess"
