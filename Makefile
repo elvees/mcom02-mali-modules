@@ -1,6 +1,9 @@
 # Copyright 2018 RnD Center "ELVEES", JSC
 
+UMP_DRIVER_VERSION ?= r8p1-00rel0
+
 export USING_UMP:=1
+export UMP_SYMVERS_FILE:=$(CURDIR)/$(UMP_DRIVER_VERSION)/driver/src/devicedrv/ump/Module.symvers
 
 TARGET_PLATFORM_MALI:=default
 CONFIG_MALI:=mcom02-m300
@@ -21,14 +24,14 @@ mali:
 	$(MAKE) -C r3p0-04rel0/driver/src/devicedrv/mali
 
 ump:
-	$(MAKE) -C r3p0-04rel0/driver/src/devicedrv/ump
+	$(MAKE) -C $(UMP_DRIVER_VERSION)/driver/src/devicedrv/ump
 
 ump-clean mali-clean: export CONFIG=$(CONFIG_MALI)
 ump-clean mali-clean: export BUILD=$(BUILD_TYPE)
 ump-clean mali-clean: export TARGET_PLATFORM=$(TARGET_PLATFORM_MALI)
 
 ump-clean:
-	$(MAKE) -C r3p0-04rel0/driver/src/devicedrv/ump clean
+	$(MAKE) -C $(UMP_DRIVER_VERSION)/driver/src/devicedrv/ump clean
 
 mali-clean:
 	$(MAKE) -C r3p0-04rel0/driver/src/devicedrv/mali clean
