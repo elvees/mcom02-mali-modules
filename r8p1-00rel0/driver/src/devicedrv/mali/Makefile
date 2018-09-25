@@ -1,9 +1,9 @@
 #
 # Copyright (C) 2010-2017 ARM Limited. All rights reserved.
-# 
+#
 # This program is free software and is provided to you under the terms of the GNU General Public License version 2
 # as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
-# 
+#
 # A copy of the licence is included with the program, and can also be obtained from Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
@@ -25,9 +25,6 @@ USING_DEVFREQ ?= 0
 # string and the __malidrv_build_info.c file, and then call the Linux build
 # system to actually build the driver. After that point the Kbuild file takes
 # over.
-
-# set up defaults if not defined by the user
-ARCH ?= arm
 
 OSKOS=linux
 FILES_PREFIX=
@@ -90,11 +87,6 @@ endif
 KDIR-$(shell uname -m):=/lib/modules/$(shell uname -r)/build
 
 include $(KDIR)/.config
-
-ifeq ($(ARCH), arm)
-# when compiling for ARM we're cross compiling
-export CROSS_COMPILE ?= $(call check_cc2, arm-linux-gnueabi-gcc, arm-linux-gnueabi-, arm-none-linux-gnueabi-)
-endif
 
 # report detected/selected settings
 ifdef ARM_INTERNAL_BUILD
@@ -204,13 +196,13 @@ EXTRA_DEFINES += -DMALI_MEM_SWAP_TRACKING=1
 endif
 
 all: $(UMP_SYMVERS_FILE)
-	$(MAKE) ARCH=$(ARCH) -C $(KDIR) M=$(CURDIR) modules
+	$(MAKE) -C $(KDIR) M=$(CURDIR) modules
 	@rm $(FILES_PREFIX)__malidrv_build_info.c $(FILES_PREFIX)__malidrv_build_info.o
 
 clean:
-	$(MAKE) ARCH=$(ARCH) -C $(KDIR) M=$(CURDIR) clean
+	$(MAKE) -C $(KDIR) M=$(CURDIR) clean
 
 kernelrelease:
-	$(MAKE) ARCH=$(ARCH) -C $(KDIR) kernelrelease
+	$(MAKE) -C $(KDIR) kernelrelease
 
 export CONFIG KBUILD_EXTRA_SYMBOLS
