@@ -1,9 +1,9 @@
 #
 # Copyright (C) 2010-2012 ARM Limited. All rights reserved.
-# 
+#
 # This program is free software and is provided to you under the terms of the GNU General Public License version 2
 # as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
-# 
+#
 # A copy of the licence is included with the program, and can also be obtained from Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
@@ -24,6 +24,8 @@ $(shell touch $(src)/arch/config.h)
 endif
 
 UDD_FILE_PREFIX = ../mali/
+
+MALI_RELEASE_NAME=$(shell cat $(src)/.version 2> /dev/null)
 
 # Get subversion revision number, fall back to 0000 if no svn info is available
 SVN_INFO = (cd $(src); svn info 2>/dev/null)
@@ -86,7 +88,7 @@ ump-y = common/ump_kernel_common.o \
 	linux/ump_osk_misc.o \
 	linux/ump_kernel_random_mapping.o
 
-ifneq ($(CONFIG_MALI400),y)	
+ifneq ($(CONFIG_MALI400),y)
 ump-y += $(UDD_FILE_PREFIX)linux/mali_osk_atomics.o \
 	 $(UDD_FILE_PREFIX)linux/mali_osk_locks.o \
 	 $(UDD_FILE_PREFIX)linux/mali_osk_memory.o \
