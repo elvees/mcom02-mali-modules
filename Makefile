@@ -9,48 +9,28 @@ TARGET_PLATFORM_MALI:=default
 CONFIG_MALI:=mcom02-m300
 BUILD_TYPE ?= release
 
-build: ump mali
-clean: ump-clean mali-clean
+build clean: export CONFIG=$(CONFIG_MALI)
+build clean: export BUILD=$(BUILD_TYPE)
+build clean: export TARGET_PLATFORM=$(TARGET_PLATFORM_MALI)
 
-mali ump: export CONFIG=$(CONFIG_MALI)
-mali ump: export BUILD=$(BUILD_TYPE)
-mali ump: export TARGET_PLATFORM=$(TARGET_PLATFORM_MALI)
-
-ifeq ($(USING_UMP),1)
-mali: ump
-endif
-
-mali:
+build:
+	$(MAKE) -C $(UMP_DRIVER_VERSION)/driver/src/devicedrv/ump
 	$(MAKE) -C r3p0-04rel0/driver/src/devicedrv/mali
 
-ump:
-	$(MAKE) -C $(UMP_DRIVER_VERSION)/driver/src/devicedrv/ump
-
-ump-clean mali-clean: export CONFIG=$(CONFIG_MALI)
-ump-clean mali-clean: export BUILD=$(BUILD_TYPE)
-ump-clean mali-clean: export TARGET_PLATFORM=$(TARGET_PLATFORM_MALI)
-
-ump-clean:
+clean:
 	$(MAKE) -C $(UMP_DRIVER_VERSION)/driver/src/devicedrv/ump clean
-
-mali-clean:
 	$(MAKE) -C r3p0-04rel0/driver/src/devicedrv/mali clean
-
 help:
 	echo 'Variables:'
 	echo '  KDIR - Path to Linux kernel source directory'
+	echo '  UMP_DRIVER_VERSION - UMP driver version, r8p1-00rel0 by default'
 	echo
 	echo 'Goals:'
 	echo
-	echo '  build   - Build ump, mali'
-	echo '  clean   - Clean ump, mali'
+	echo '  build   - Build UMP and Mali kernel drivers'
+	echo '  clean   - Clean UMP and Mali directories'
 	echo '  help    - Show this help message'
-	echo
-	echo '  mali    - Build Mali kernel driver'
-	echo '  ump     - Build Universal Memory Provider kernel driver'
-	echo
-	echo '  mali-clean   - Clean Mali kernel driver'
-	echo '  ump-clean    - Clean Universal Memory Provider kernel driver'
 	echo
 
 .SILENT: help
+.PHONY: build clean help
