@@ -9,13 +9,17 @@ TARGET_PLATFORM_MALI:=default
 CONFIG_MALI:=mcom02-m300
 BUILD_TYPE ?= release
 
-build clean: export CONFIG=$(CONFIG_MALI)
-build clean: export BUILD=$(BUILD_TYPE)
-build clean: export TARGET_PLATFORM=$(TARGET_PLATFORM_MALI)
+build install clean: export CONFIG=$(CONFIG_MALI)
+build install clean: export BUILD=$(BUILD_TYPE)
+build install clean: export TARGET_PLATFORM=$(TARGET_PLATFORM_MALI)
 
 build:
 	$(MAKE) -C $(UMP_DRIVER_VERSION)/driver/src/devicedrv/ump
 	$(MAKE) -C r3p0-04rel0/driver/src/devicedrv/mali
+
+install: build
+	$(MAKE) -C $(UMP_DRIVER_VERSION)/driver/src/devicedrv/ump install
+	$(MAKE) -C r3p0-04rel0/driver/src/devicedrv/mali install
 
 clean:
 	$(MAKE) -C $(UMP_DRIVER_VERSION)/driver/src/devicedrv/ump clean
@@ -29,8 +33,9 @@ help:
 	echo
 	echo '  build   - Build UMP and Mali kernel drivers'
 	echo '  clean   - Clean UMP and Mali directories'
+	echo '  install - Install UMP and Mali kernel drivers'
 	echo '  help    - Show this help message'
 	echo
 
 .SILENT: help
-.PHONY: build clean help
+.PHONY: build install clean help

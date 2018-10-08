@@ -50,8 +50,11 @@ ifeq ($(KDIR),)
 $(error No KDIR found for platform $(CPU))
 endif
 
-all:
+build:
 	$(MAKE) -C $(KDIR) M=$(CURDIR) modules
+
+install: build
+	$(MAKE) -C $(KDIR) M=$(CURDIR) modules_install
 
 kernelrelease:
 	$(MAKE) -C $(KDIR) kernelrelease

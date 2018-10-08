@@ -195,9 +195,12 @@ ifeq ($(MALI_MEM_SWAP_TRACKING),1)
 EXTRA_DEFINES += -DMALI_MEM_SWAP_TRACKING=1
 endif
 
-all: $(UMP_SYMVERS_FILE)
+build: $(UMP_SYMVERS_FILE)
 	$(MAKE) -C $(KDIR) M=$(CURDIR) modules
 	@rm $(FILES_PREFIX)__malidrv_build_info.c $(FILES_PREFIX)__malidrv_build_info.o
+
+install: build
+	$(MAKE) -C $(KDIR) M=$(CURDIR) modules_install
 
 clean:
 	$(MAKE) -C $(KDIR) M=$(CURDIR) clean

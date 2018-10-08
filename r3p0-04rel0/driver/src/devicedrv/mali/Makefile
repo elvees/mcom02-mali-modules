@@ -1,9 +1,9 @@
 #
 # Copyright (C) 2010-2012 ARM Limited. All rights reserved.
-# 
+#
 # This program is free software and is provided to you under the terms of the GNU General Public License version 2
 # as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
-# 
+#
 # A copy of the licence is included with the program, and can also be obtained from Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
@@ -68,9 +68,12 @@ export EXTRA_DEFINES += -DCONFIG_MALI400_GPU_UTILIZATION=1
 export CONFIG_MALI400_GPU_UTILIZATION := y
 endif
 
-all: $(UMP_SYMVERS_FILE)
+build: $(UMP_SYMVERS_FILE)
 	$(MAKE) -C $(KDIR) M=$(CURDIR) modules
 	@rm $(FILES_PREFIX)__malidrv_build_info.c $(FILES_PREFIX)__malidrv_build_info.o
+
+install: build
+	$(MAKE) -C $(KDIR) M=$(CURDIR) modules_install
 
 clean:
 	$(MAKE) -C $(KDIR) M=$(CURDIR) clean
