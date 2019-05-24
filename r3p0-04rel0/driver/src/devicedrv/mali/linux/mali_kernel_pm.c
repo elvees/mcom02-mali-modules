@@ -166,6 +166,7 @@ static int mali_probe(struct platform_device *pdev)
 	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 1)));
 	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 2)));
 	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 3)));
+	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 4)));
 
 	return 0;
 }
