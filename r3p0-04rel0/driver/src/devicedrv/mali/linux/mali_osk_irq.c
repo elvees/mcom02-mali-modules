@@ -111,9 +111,9 @@ _mali_osk_irq_t *_mali_osk_irq_init( u32 irqnum, _mali_osk_irq_uhandler_t uhandl
 				irq = probe_irq_off(mask);
 				err = ack_func(data);
 			}
-			while (irq < 0 && (err == _MALI_OSK_ERR_OK) && probe_count--);
+			while (irq < 1 && (err == _MALI_OSK_ERR_OK) && probe_count--);
 
-			if (irq < 0 || (_MALI_OSK_ERR_OK != err)) irqnum = -1;
+			if (irq < 1 || (_MALI_OSK_ERR_OK != err)) irqnum = -1;
 			else irqnum = irq;
 		}
 		else irqnum = -1; /* no probe functions, fault */
