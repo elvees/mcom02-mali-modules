@@ -169,6 +169,8 @@ static AllocationList * _allocation_list_item_get(void)
 		return NULL;
 	}
 
+	item->offset = 0;
+	item->next = 0;
 	item->physaddr = _kernel_page_allocate();
 	if ( 0 == item->physaddr )
 	{

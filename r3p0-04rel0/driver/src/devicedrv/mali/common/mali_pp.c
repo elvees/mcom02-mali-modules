@@ -76,6 +76,7 @@ struct mali_pp_core *mali_pp_create(const _mali_osk_resource_t *resource, struct
 		core->group = group;
 		core->core_id = mali_global_num_pp_cores;
 		core->running_job = NULL;
+		core->running_sub_job = 0;
 		core->counter_src0 = MALI_HW_CORE_NO_COUNTER;
 		core->counter_src1 = MALI_HW_CORE_NO_COUNTER;
 		core->counter_src0_used = MALI_HW_CORE_NO_COUNTER;
@@ -102,10 +103,16 @@ struct mali_pp_core *mali_pp_create(const _mali_osk_resource_t *resource, struct
 				{
 					/* Initialise the timeout timer */
 					core->timeout_timer = _mali_osk_timer_init();
+					core->timeout_job_id = 0;
+					core->core_timed_out = MALI_FALSE;
 					if(NULL != core->timeout_timer)
 					{
 						_mali_osk_timer_setcallback(core->timeout_timer, mali_pp_timeout, (void *)core);
 
+						core->counter_src0 = 0;
+						core->counter_src1 = 0;
+						core->counter_src0_used = 0;
+						core->counter_src1_used = 0;
 						mali_global_pp_cores[mali_global_num_pp_cores] = core;
 						mali_global_num_pp_cores++;
 

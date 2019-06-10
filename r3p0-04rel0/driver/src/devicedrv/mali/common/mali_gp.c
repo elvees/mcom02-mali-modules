@@ -86,10 +86,18 @@ struct mali_gp_core *mali_gp_create(const _mali_osk_resource_t * resource, struc
 				{
 					/* Initialise the timeout timer */
 					core->timeout_timer = _mali_osk_timer_init();
+					core->timeout_job_id = 0;
+					core->core_timed_out = MALI_FALSE;
 					if(NULL != core->timeout_timer)
 					{
 						_mali_osk_timer_setcallback(core->timeout_timer, mali_gp_timeout, (void *)core);
 						MALI_DEBUG_PRINT(4, ("Mali GP: set global gp core from 0x%08X to 0x%08X\n", mali_global_gp_core, core));
+
+						core->counter_src0 = 0;
+						core->counter_src1 = 0;
+						core->counter_src0_used = 0;
+						core->counter_src1_used = 0;
+
 						mali_global_gp_core = core;
 
 						return core;

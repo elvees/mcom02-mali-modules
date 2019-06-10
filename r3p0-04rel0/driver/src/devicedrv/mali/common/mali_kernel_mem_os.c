@@ -71,9 +71,11 @@ mali_physical_memory_allocator * mali_os_allocator_create(u32 max_allocation, u3
 			    allocator->allocate = os_allocator_allocate;
 			    allocator->allocate_page_table_block = os_allocator_allocate_page_table_block;
 			    allocator->destroy = os_allocator_destroy;
-				allocator->stat = os_allocator_stat;
+			    allocator->stat = os_allocator_stat;
 			    allocator->ctx = info;
-				allocator->name = name;
+			    allocator->name = name;
+			    allocator->alloc_order = 0;
+			    allocator->next = 0;
 
 			    return allocator;
             }
