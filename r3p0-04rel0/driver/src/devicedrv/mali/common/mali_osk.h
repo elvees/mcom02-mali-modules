@@ -620,12 +620,21 @@ typedef struct _mali_osk_resource
 	s32 cpu_usage_adjust;           /**< Offset added to the base address of the resource to arrive at the CPU physical address of the resource (if different from the Mali physical address) */
 	u32 size;                       /**< Size in bytes of the resource - either the size of its register range, or the size of the memory block. */
 	u32 irq;                        /**< IRQ number delivered to the CPU, or -1 to tell the driver to probe for it (if possible) */
+	const char *irq_name;           /**< IRQ name originated from DTS */
 	u32 flags;                      /**< Resources-specific flags. */
 	u32 mmu_id;                     /**< Identifier for Mali MMU resources. */
 	u32 alloc_order;                /**< Order in which MEMORY/OS_MEMORY resources are used */
 } _mali_osk_resource_t;
-/** @} */ /* end group _mali_osk_miscellaneous */
 
+/** @brief update resource
+ * In some cases update resource is desired. To achieve it this function
+ * should be defined.
+ *
+ * This function will be called from _mali_osk_resources_init()
+ */
+void mali_osk_resource_update(_mali_osk_resource_t *arch_config,
+			      u32 num_resources);
+/** @} */ /* end group _mali_osk_miscellaneous */
 
 #include "mali_kernel_memory_engine.h"   /* include for mali_memory_allocation and mali_physical_memory_allocation type */
 

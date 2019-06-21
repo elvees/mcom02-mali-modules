@@ -47,10 +47,17 @@ static const struct kernel_param_ops param_mem_ops = {
 module_param_cb(mem, &param_mem_ops, &arch_configuration[4].size, S_IRUGO);
 MODULE_PARM_DESC(mem, "Mali system memory size");
 
+__attribute__((weak))
+void mali_osk_resource_update(_mali_osk_resource_t *res, u32 num)
+{
+}
+
 _mali_osk_errcode_t _mali_osk_resources_init( _mali_osk_resource_t **arch_config, u32 *num_resources )
 {
     *num_resources = sizeof(arch_configuration) / sizeof(arch_configuration[0]);
     *arch_config = arch_configuration;
+
+    mali_osk_resource_update(*arch_config, *num_resources);
     return _MALI_OSK_ERR_OK;
 }
 

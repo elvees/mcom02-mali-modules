@@ -36,6 +36,7 @@
 #endif
 
 static struct clk *mali_clk;
+static struct platform_device *mali_pdev;
 
 static int mali_probe(struct platform_device *pdev);
 static int mali_remove(struct platform_device *pdev);
@@ -138,6 +139,28 @@ struct platform_device mali_gpu_device =
 	.dev.release = _mali_release_pm
 };
 
+/* this function is called when resources are initialized */
+void mali_osk_resource_update(_mali_osk_resource_t *res, u32 num)
+{
+	int idx, irq;
+
+	if (!mali_pdev)
+		return;
+
+	for (idx = 0; idx < num; idx++) {
+		if (!res[idx].irq_name)
+			continue;
+
+		irq = platform_get_irq_byname(mali_pdev, res[idx].irq_name);
+
+		if (irq > 0) {
+			MALI_DEBUG_PRINT(2, ("Mali. IRQ found %s=%d\n",
+					     res[idx].irq_name, irq));
+			res[idx].irq = irq;
+		}
+	}
+}
+
 /** This function is called when the device is probed */
 static int mali_probe(struct platform_device *pdev)
 {
@@ -145,6 +168,8 @@ static int mali_probe(struct platform_device *pdev)
 	int err;
 
 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+
+	mali_pdev = pdev;
 
 	/* Try to get and enable clock */
 	mali_clk = devm_clk_get(&pdev->dev, NULL);
@@ -162,12 +187,6 @@ static int mali_probe(struct platform_device *pdev)
 		return err;
 	}
 
-	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 0)));
-	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 1)));
-	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 2)));
-	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 3)));
-	MALI_DEBUG_PRINT(2, ("MALI IRQ DEV PROBE %d \n", platform_get_irq(pdev, 4)));
-
 	return 0;
 }
 
@@ -177,6 +196,8 @@ static int mali_remove(struct platform_device *pdev)
 	pm_runtime_disable(&pdev->dev);
 #endif
 	clk_disable_unprepare(mali_clk);
+
+	mali_pdev = NULL;
 	return 0;
 }
 

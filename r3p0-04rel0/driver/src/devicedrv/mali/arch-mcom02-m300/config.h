@@ -21,6 +21,7 @@ static _mali_osk_resource_t arch_configuration [] =
 		.description = "Mali-300 GP",
 		.base = BASE_ADDR | 0x0000,
 		.irq = -1,
+		.irq_name = "IRQGP",
 		.mmu_id = 1
 	},
 	{
@@ -28,12 +29,14 @@ static _mali_osk_resource_t arch_configuration [] =
 		.description = "Mali-300 PP",
 		.base = BASE_ADDR | 0x8000,
 		.irq = -1,
+		.irq_name = "IRQPP0",
 		.mmu_id = 2
 	},
 	{
 		.type = MMU,
 		.base = BASE_ADDR | 0x3000,
 		.irq = -1,
+		.irq_name = "IRQGPMMU",
 		.description = "Mali-300 MMU for GP",
 		.mmu_id = 1
 	},
@@ -41,6 +44,7 @@ static _mali_osk_resource_t arch_configuration [] =
 		.type = MMU,
 		.base = BASE_ADDR | 0x4000,
 		.irq = -1,
+		.irq_name = "IRQPPMMU0",
 		.description = "Mali-300 MMU for PP",
 		.mmu_id = 2
 	},
