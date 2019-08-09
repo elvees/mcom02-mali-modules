@@ -101,10 +101,14 @@ int ump_random_mapping_insert(ump_random_mapping *map, ump_dd_mem *mem)
 
 		get_random_bytes(&id, sizeof(id));
 
-		/* Try a new random number if id happened to be the invalid
-		 * secure ID (-1). */
-		if (unlikely(id == UMP_INVALID_SECURE_ID))
-			continue;
+		/* The libUMP.so uses secure_id to evaluate pgoff
+		 * according expression:
+		 * pgoff = secure_id * sysconf(_SC_PAGE_SIZE);
+		 *
+		 * do_mmap() validates that pgoff + (len >> PAGE_SHIFT)
+		 * doesn't overflow. Thus id must be in the valid page
+		 * number range. */
+		id = __phys_to_pfn(id);
 
 		/* Insert into the tree. If the id was already in use, get a
 		 * new random id and try again. */
